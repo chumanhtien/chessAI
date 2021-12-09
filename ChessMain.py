@@ -38,7 +38,7 @@ def main():
     sqSelected = () # no square is selected, keep track of the last click of the user (tuple:= (row, col))
     playerClicks = [] # track of player clicks ( two tuples: [(6,4), (4,4)]
     gameOver = False
-    playerOne = False #If a Human is playing white, then this will be True. If an AI is playing then
+    playerOne = True #If a Human is playing white, then this will be True. If an AI is playing then
     playerTwo = False # Same as above but for black
     while running:
         humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
@@ -179,15 +179,15 @@ def drawMoveLog(screen, gs, font):
     moveLog = gs.moveLog
     moveTexts = [] #modify this later
     for i in range(0, len(moveLog), 2):
-        moveString = str(i//2 + 1) + ". "
-        moveString += "White:" + moveLog[i].getChessNotation() + " - "
+        moveString = str(i//2 + 1) + ". " + moveLog[i].getChessNotation() + " - "
+        # moveString += "White:" + moveLog[i].getChessNotation() + " - "
         if i + 1 < len(moveLog): #make sure black made a move
-            moveString += "Black:"
+            # moveString += "Black:"
             moveString += moveLog[i + 1].getChessNotation() + "; "
         moveTexts.append(moveString)
 
     # 1.f2f5 f5f2 2.e2e4 e7e5....
-    movesPerRow = 2
+    movesPerRow = 3
     padding = 5
     textY = padding
     lineSpacing = 2

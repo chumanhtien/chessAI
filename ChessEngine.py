@@ -658,6 +658,13 @@ class Move():
         self.endCol = endSq[1]
         self.pieceMoved = board[self.startRow][self.startCol] #VI tri ban dau di chuyen => nguon
         self.pieceCaptured = board[self.endRow][self.endCol] # Vi tri se di chuyen toi => Dich
+        self.isPawnPromotion = self.pieceMoved[1] == 'p' and (self.endRow == 0 or self.endRow == 7)
+        # self.isCastleMove = isCastleMove
+        # self.isEnPassantMove = isenPassant
+        # if isenPassant:
+        #     if self.pieceMoved == 'wp':
+        #         self.pieceCaptured = 'bp'
+        #     else: self.pieceCaptured = 'wp'
 
         #pawn promotion
         # self.promotionChoice = 'Q'
@@ -676,6 +683,7 @@ class Move():
         #castle move
         self.isCastleMove = isCastleMove
 
+        self.isCapture = self.pieceCaptured != '--'
         self.moveID = self.startRow * 1000 + self.startCol * 100 + self.endRow * 10 + self.endCol
         #=> Hash function : moveid
        # print(self.moveID)
@@ -690,7 +698,30 @@ class Move():
 
     def getChessNotation(self):
         # to make this like real chess notation
-        return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
+        # return self.getRankFile(self.startRow, self.startCol) + self.getRankFile(self.endRow, self.endCol)
+        #new ChessNotation
+        if self.isPawnPromotion:
+            return self.getRankFile(self.endRow, self.endCol) + "Q"
+        if self.isCastleMove:
+            if self.endCol == 1:
+                return "0-0-0"
+            else:
+                return "0-0"
+        if self.isEnPassantMove:
+            return self.getRankFile(self.startRow, self.startCol)[0] + "x" + self.getRankFile(self.endRow,
+                                                                                                self.endCol) + " e.p."
+        if self.pieceCaptured != "--":
+            if self.pieceMoved[1] == "p":
+                return self.getRankFile(self.startRow, self.startCol)[0] + "x" + self.getRankFile(self.endRow,
+                                                                                                    self.endCol)
+            else:
+                return self.pieceMoved[1] + "x" + self.getRankFile(self.endRow, self.endCol)
+        else:
+            if self.pieceMoved[1] == "p":
+                return self.getRankFile(self.endRow, self.endCol)
+            else:
+                return self.pieceMoved[1] + self.getRankFile(self.endRow, self.endCol)
+
     def getRankFile(self, r, c):
         return self.colsToFiles[c] + self.rowsToRanks[r]
 
@@ -699,3 +730,21 @@ class Move():
         #castle move
         if self.isCastleMove:
             return "O-O" if self.endCol == 6 else "O-O-O"
+        endSquare = self.getRankFile(self.endRow,self.endCol)
+
+        if self.pieceMoved[1] == 'p':
+            if self.isCapture:
+                return self.colsToFiles[self.startCol] + "x" + endSquare
+            else:
+                if self.isPawnPromotion:
+                    return endSquare + "Q"
+                else:
+                    return endSquare
+
+        #piece move
+        moveString = self.pieceMoved[1]
+        if self.isCaptured:
+            moveString += "x"
+        return moveString + endSquare
+
+
