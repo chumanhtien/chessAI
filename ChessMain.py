@@ -2,7 +2,7 @@
 This is our main driver file. It will be responsible for handling user input and displaying ta current gamestate object
 """
 import pygame as p
-import ChessEngine, SmartMoveFinder
+import ChessEngine, ChessAI
 
 BOARD_WIDTH = BOARD_HEIGHT = 512 # 400 is another
 MOVELOG_PANEL_WIDTH = 300
